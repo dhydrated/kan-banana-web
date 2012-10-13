@@ -12,10 +12,11 @@ window.KanBananaWeb = {
 $(document).ready(function(){
   KanBananaWeb.init();
 
-  TryButton = Backbone.View.extend({
-	  id: "launch-app",
+  KanBananaWeb.Views.Index = Backbone.View.extend({
+	  tagName: "div",
+          className: "launch-button",
 	  events: {
-	    "click #launch-app":"open",
+	    "click div.launch-button":"open",
 	  },
 	  render: function() {
 	    $(this.el).html('<a class="btn btn-primary btn-large">Learn more »</a>');
@@ -26,5 +27,5 @@ $(document).ready(function(){
           }
 	});
 
-   var tryButton = new TryButton();
+   var tryButton = new KanBananaWeb.Views.Index();
 });
