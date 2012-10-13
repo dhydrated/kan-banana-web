@@ -11,21 +11,31 @@ window.KanBananaWeb = {
 
 $(document).ready(function(){
   KanBananaWeb.init();
+  
+   var template = function(name) {
+    return Handlebars.compile($('#'+name+'-template').html());
+  };
 
   KanBananaWeb.Views.Index = Backbone.View.extend({
-	  tagName: "div",
-          className: "launch-button",
+          template: template('trybutton'),
+          initialize: function() {
+              this.render();
+          },
 	  events: {
-	    "click div.launch-button":"open",
+	    'click #learn-more-button': 'open'
 	  },
 	  render: function() {
-	    $(this.el).html('<a class="btn btn-primary btn-large">Learn more »</a>');
+            this.$el.html(this.template(this));
             return this;
 	  },
-          open: function(){
-               alert('yeay');
+          open: function(event){
+		console.log(event);
+		//event.preventDefault();
+                
           }
 	});
 
-   var tryButton = new KanBananaWeb.Views.Index();
+   var tryButton = new KanBananaWeb.Views.Index({el: $("div.launch-button")});
+
+
 });

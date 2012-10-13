@@ -10,8 +10,7 @@ handlers:
 
 - url: /.*
   script: index.app
-- url: /home
-  script: home.app
+
 
 libraries:
 - name: jinja2
