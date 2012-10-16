@@ -1,5 +1,5 @@
 
-window.KanBananaWeb = {
+window.KanBanana = {
   Models: {},
   Collections: {},
   Views: {},
@@ -10,32 +10,36 @@ window.KanBananaWeb = {
 };
 
 $(document).ready(function(){
-  KanBananaWeb.init();
+  KanBanana.init();
   
-   var template = function(name) {
+  var template = function(name) {
     return Handlebars.compile($('#'+name+'-template').html());
   };
 
-  KanBananaWeb.Views.Index = Backbone.View.extend({
-          template: template('trybutton'),
-          initialize: function() {
-              this.render();
-          },
-	  events: {
-	    'click #learn-more-button': 'open'
-	  },
-	  render: function() {
-            this.$el.html(this.template(this));
-            return this;
-	  },
-          open: function(event){
-		console.log(event);
-		//event.preventDefault();
-                
-          }
-	});
+  KanBanana.Views.Project = Backbone.Model.extend({
+	  
+  });
 
-   var tryButton = new KanBananaWeb.Views.Index({el: $("div.launch-button")});
+  window.proj = new KanBanana.Views.Project({name:'Hello World!', description:'Testing project.'});
+
+  var jqXhr = $.ajax({
+      type: "POST",
+      url: '/api/project',
+      beforeSend: function( xhr ) {
+        xhr.overrideMimeType( 'application/json;charset=UTF-8' );
+      },
+      contentType: 'application/json;charset=UTF-8', 
+      dataType: 'json',
+      data: JSON.stringify(window.proj.toJSON()),
+      context: this,
+      async: true,           
+    });
 
 
+  jqXhr.done(this._successHandler);
+  
+  function _successHandler(data){
+	  
+	  console.log(data);
+  }
 });

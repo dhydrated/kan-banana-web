@@ -8,6 +8,9 @@ handlers:
 - url: /assets
   static_dir: assets
 
+- url: /service/.*
+  script: service.app
+  
 - url: /.*
   script: index.app
 
