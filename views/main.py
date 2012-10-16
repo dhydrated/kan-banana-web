@@ -3,9 +3,7 @@ import os
 import cgi
 import webapp2
 from google.appengine.api import users
-
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+from template_engine import TemplateEngine
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -19,6 +17,8 @@ class MainPage(webapp2.RequestHandler):
           'user': user
        }
 
-       template = jinja_environment.get_template('main.html')
+       template_engine = TemplateEngine()
+       
+       template = template_engine.get_template('main.html')
        self.response.out.write(template.render(template_values))
        
