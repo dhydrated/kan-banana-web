@@ -18,7 +18,5 @@ class MainPage(webapp2.RequestHandler):
        }
 
        template_engine = TemplateEngine()
-       
-       template = template_engine.get_template('main.html')
-       self.response.out.write(template.render(template_values))
+       self.response.out.write(template_engine.render('main.html', template_values))
        
