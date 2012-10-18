@@ -8,7 +8,7 @@ handlers:
 - url: /assets
   static_dir: assets
 
-- url: /service/.*
+- url: /service*
   script: service.app
   
 - url: /.*
