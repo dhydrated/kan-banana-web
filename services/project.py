@@ -1,6 +1,7 @@
 import webapp2
 import logging
 from google.appengine.api import urlfetch
+from utilities.api_helper import ApiHelper
 
 class Project(webapp2.RequestHandler):
     def put(self):
@@ -9,14 +10,9 @@ class Project(webapp2.RequestHandler):
         
         path = self.request.path_info[1:].replace('service/','')
         
-        response = urlfetch.fetch('http://kan-banana.appspot.com/'+path, 
-                                  payload=self.request.body, 
-                                  method='PUT', 
-                                  headers={'Content-Type':'application/json'}, 
-                                  allow_truncated=False, 
-                                  follow_redirects=True, 
-                                  deadline=60, 
-                                  validate_certificate=None)
+        apiHelper = ApiHelper()
+        
+        response = apiHelper.execute(path, self.request, 'PUT', {'Content-Type':'application/json'})
         
         logging.debug('response: %s', response.content)
         
@@ -32,16 +28,10 @@ class Project(webapp2.RequestHandler):
         
         path = self.request.path_info[1:].replace('service/','')
         
-        response = urlfetch.fetch('http://kan-banana.appspot.com/'+path, 
-                                  payload=self.request.body, 
-                                  method='GET', 
-                                  headers={'Content-Type':'application/json'}, 
-                                  allow_truncated=False, 
-                                  follow_redirects=True, 
-                                  deadline=60, 
-                                  validate_certificate=None)
+        apiHelper = ApiHelper()
+        
+        response = apiHelper.execute(path, self.request, 'GET', {'Content-Type':'application/json'})
         
         logging.debug('response: %s', response.content)
         
         self.response.out.write(response.content)
-    
