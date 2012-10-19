@@ -23,8 +23,8 @@ $(document).ready(function(){
   window.proj = new KanBanana.Views.Project({name:'Hello World!', description:'Testing project.'});
 
   var jqXhr = $.ajax({
-      type: "POST",
-      url: '/api/project',
+      type: "PUT",
+      url: '/service',
       beforeSend: function( xhr ) {
         xhr.overrideMimeType( 'application/json;charset=UTF-8' );
       },
