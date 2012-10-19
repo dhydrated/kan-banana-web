@@ -23,14 +23,15 @@ $(document).ready(function(){
   window.proj = new KanBanana.Views.Project({name:'Hello World!', description:'Testing project.'});
 
   var jqXhr = $.ajax({
-      type: "PUT",
-      url: '/service',
+      type: "GET",
+      url: '/service/project/agxzfmthbi1iYW5hbmFyDgsSB1Byb2plY3QY0Q8M',
+      //url: '/service/project',
       beforeSend: function( xhr ) {
         xhr.overrideMimeType( 'application/json;charset=UTF-8' );
       },
       contentType: 'application/json;charset=UTF-8', 
       dataType: 'json',
-      data: JSON.stringify(window.proj.toJSON()),
+      //data: JSON.stringify(window.proj.toJSON()),
       context: this,
       async: true,           
     });

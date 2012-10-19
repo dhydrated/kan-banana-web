@@ -3,8 +3,8 @@ import os
 import cgi
 import webapp2
 from google.appengine.api import users
-from views.api import API
+from services.project import Project
 
 
-app = webapp2.WSGIApplication([('/service', API)],
+app = webapp2.WSGIApplication([('/service/project/.*', Project)],
                               debug=True)
