@@ -7,7 +7,9 @@ class Project(webapp2.RequestHandler):
         
         logging.debug('request: %s', self.request)
         
-        response = urlfetch.fetch('http://kan-banana.appspot.com/project', 
+        path = self.request.path_info[1:].replace('service/','')
+        
+        response = urlfetch.fetch('http://kan-banana.appspot.com/'+path, 
                                   payload=self.request.body, 
                                   method='PUT', 
                                   headers={'Content-Type':'application/json'}, 
@@ -24,7 +26,13 @@ class Project(webapp2.RequestHandler):
         
         logging.debug('request: %s', self.request)
         
-        response = urlfetch.fetch('http://kan-banana.appspot.com/project', 
+#        logging.debug('path_info: %s', self.request.path_info[1:])
+#        split = self.request.path_info[1:].split(':')
+#        logging.debug('split: %s', split)
+        
+        path = self.request.path_info[1:].replace('service/','')
+        
+        response = urlfetch.fetch('http://kan-banana.appspot.com/'+path, 
                                   payload=self.request.body, 
                                   method='GET', 
                                   headers={'Content-Type':'application/json'}, 
