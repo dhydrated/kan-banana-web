@@ -3,34 +3,39 @@ import logging
 from google.appengine.api import urlfetch
 from utilities.api_helper import ApiHelper
 
-class Project(webapp2.RequestHandler):
+class ApiProxy(webapp2.RequestHandler):
+    
     def put(self):
         
-        logging.debug('request: %s', self.request)
-        
-        path = self.request.path_info[1:].replace('service/','')
-        
-        apiHelper = ApiHelper()
-        
-        response = apiHelper.execute(path, self.request, 'PUT', {'Content-Type':'application/json'})
-        
-        logging.debug('response: %s', response.content)
-        
-        self.response.out.write(response.content)
+        self.process()
     
     def get(self):
+        
+        self.process()
+    
+    def delete(self):
+        
+        self.process()
+        
+    
+    def process(self):
         
         logging.debug('request: %s', self.request)
         
 #        logging.debug('path_info: %s', self.request.path_info[1:])
 #        split = self.request.path_info[1:].split(':')
 #        logging.debug('split: %s', split)
+
+        
+#        logging.debug('request method: %s', self.request.method)
+        
+#        logging.debug('request dir: %s', dir(self.request))
         
         path = self.request.path_info[1:].replace('service/','')
         
         apiHelper = ApiHelper()
         
-        response = apiHelper.execute(path, self.request, 'GET', {'Content-Type':'application/json'})
+        response = apiHelper.execute(path, self.request, self.request.method, {'Content-Type':'application/json'})
         
         logging.debug('response: %s', response.content)
         
