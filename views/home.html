@@ -69,6 +69,7 @@
 
     <div class="container">
 
+	  <div id="project-table"></div>
 
       <hr>
 
@@ -92,13 +93,23 @@
 	<script type="text/x-handlebars-template" id="trybutton-template">
 		<a id="learn-more-button" class="btn btn-primary btn-large" href="/home">Learn more »</a>
 	</script>
+	
+	<script type="text/x-handlebars-template" id="projects-list-template">
+		<table id="kb-projects-table" class="table table-striped table-bordered">
+			<tr><th>Name</th><th>Description</th></tr>
+		</table>
+	</script>
+	
+	<script type="text/x-handlebars-template" id="project-row-template">
+		<tr class='test'><td>{{name}}</td><td>{{ description }}</td></tr>
+	</script>
 
 	<script src="/assets/js/lodash.min.js"></script>
 	<script src="/assets/js/jquery.min.js"></script>
 	<script src="/assets/js/handlebars.js"></script>
 	<script src="/assets/js/backbone-min.js"></script>
     <script src="/assets/js/bootstrap.js"></script>
-    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/home.js"></script>
 
 
   
