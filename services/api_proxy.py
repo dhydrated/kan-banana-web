@@ -9,6 +9,10 @@ class ApiProxy(webapp2.RequestHandler):
         
         self.process()
     
+    def post(self):
+        
+        self.process()
+    
     def get(self):
         
         self.process()
@@ -31,7 +35,7 @@ class ApiProxy(webapp2.RequestHandler):
         
 #        logging.debug('request dir: %s', dir(self.request))
         
-        path = self.request.path_info[1:].replace('service/','')
+        path = self.request.path_info[1:].replace('services/','')
         
         apiHelper = ApiHelper()
         
