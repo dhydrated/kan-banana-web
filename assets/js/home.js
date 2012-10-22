@@ -72,10 +72,7 @@ $(document).ready(function(){
       },
       template: template('project-row'),
       render: function() {
-//    	  var context = {name: this.name(), description: this.description()};
-    	  
-    	  console.log(this.template(this, {name: this.name(), description: this.description()}));
-//          this.$el.append(this.template(this, context));
+          this.$el.append(this.template(this));
           return this;
       },
       name: function() { 
