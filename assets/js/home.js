@@ -35,21 +35,14 @@ $(document).ready(function(){
     	  
     	  var projects = new KanBanana.Collections.Projects();
     	  
-    	  console.log('fetching');
-    	  
     	  projects.fetch({
     		  success: function(){
-    			  console.log('done');
-    	    	  
     	    	  var index = projects.length;
     	    	  
     	    	  for (var i=0;i<index;i++){
     	    		  var project = projects.shift();
-    	    		  console.log(project);
     	    		  
     	    		  var projectRow = new KanBanana.Views.ProjectRow({model: project})
-    	    		  
-//    	    		  $('#kb-projects-table').append('<tr><td>{{name}}</td><td>{{description}}</td></tr>');
     	    	  }
 
     		  },
