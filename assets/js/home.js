@@ -60,22 +60,31 @@ $(document).ready(function(){
   KanBanana.Views.ProjectRow = Backbone.View.extend({
 	  el: '#kb-projects-table',
       initialize: function(){
-          console.log('ProjectRow');
           this.render();
       },
       template: template('project-row'),
+      events: {
+    	"click .btn-remove ": "remove",  
+      },
       render: function() {
           this.$el.append(this.template(this));
           return this;
       },
+      id: function() { 
+    	  return this.model.get('id');    
+      },
       name: function() { 
-    	  console.log(this.model.get('name'));
     	  return this.model.get('name');    
       },
       description: function() { 
-    	  console.log(this.model.get('description'));
     	  return this.model.get('description');    
-      }
+      },
+      remove: function(events){
+    	  selectedId = events.currentTarget.id.replace('remove-','');
+    	  if(selectedId == this.id()){
+        	  alert(this.model.get('id'));
+    	  }
+      },
   });
 
   // The initialize function is always called when instantiating a Backbone View.
