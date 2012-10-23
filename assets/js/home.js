@@ -80,9 +80,13 @@ $(document).ready(function(){
     	  return this.model.get('description');    
       },
       remove: function(events){
-    	  selectedId = events.currentTarget.id.replace('remove-','');
+    	  self = this;
+    	  domId = events.currentTarget.id;
+    	  selectedId = domId.replace('remove-','');
     	  if(selectedId == this.id()){
-        	  alert(this.model.get('id'));
+        	  this.model.destroy({success: function(model, response) {
+        		  self.$el.find('#'+domId).parentsUntil(self.$el).remove();  
+        	  }});
     	  }
       },
   });
