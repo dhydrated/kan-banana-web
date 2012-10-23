@@ -31,20 +31,19 @@ $(document).ready(function(){
           this.render();
       },
       template: template('projects-list'),
+      events: {
+    	  "click .create-project" : "launchProjectForm",
+    	  "click .save-project" : "saveProject"
+      },
       render: function() {
-    	  
     	  var projects = new KanBanana.Collections.Projects();
-    	  
     	  projects.fetch({
     		  success: function(){
     	    	  var index = projects.length;
-    	    	  
     	    	  for (var i=0;i<index;i++){
     	    		  var project = projects.shift();
-    	    		  
     	    		  var projectRow = new KanBanana.Views.ProjectRow({model: project})
     	    	  }
-
     		  },
     		  error: function(){
     			  console.log('error');
@@ -53,6 +52,19 @@ $(document).ready(function(){
     	  
           this.$el.html(this.template(this));
           return this;
+      },
+      launchProjectForm: function(){
+    	  $('#project-form-modal').modal();
+      },
+      saveProject: function(){
+    	  console.log('save');
+    	  
+    	  console.log({name: $('#project-name').val(), description: $('#project-desc').val()});
+    	  var newProject = new KanBanana.Models.Project({name: $('#project-name'), description: $('#project-desc')});
+    	  
+    	  newProject.save();
+    	  
+    	  $('#project-form-modal').modal('hide');
       }
   });
   
