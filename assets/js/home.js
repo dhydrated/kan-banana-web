@@ -57,9 +57,8 @@ $(document).ready(function(){
       saveProject: function(){
     	  console.log('save');
     	  
-    	  console.log({name: $('#project-name').val(), description: $('#project-desc').val()});
-    	  var newProject = new KanBanana.Models.Project({name: $('#project-name'), description: $('#project-desc')});
-    	  
+    	  var newProject = new KanBanana.Models.Project({name: $('#project-name').val(), description: $('#project-desc').val()});
+    	  var projectRow = new KanBanana.Views.ProjectRow({model: newProject});
     	  newProject.save();
     	  
     	  $('#project-form-modal').modal('hide');
