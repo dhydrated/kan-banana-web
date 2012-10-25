@@ -39,11 +39,9 @@ $(document).ready(function(){
     	  var projects = new KanBanana.Collections.Projects();
     	  projects.fetch({
     		  success: function(){
-    	    	  var index = projects.length;
-    	    	  for (var i=0;i<index;i++){
-    	    		  var project = projects.shift();
-    	    		  var projectRow = new KanBanana.Views.ProjectRow({model: project})
-    	    	  }
+    			  projects.each(function(project){
+    				  var projectRow = new KanBanana.Views.ProjectRow({model: project});
+    			  },this)
     		  },
     		  error: function(){
     			  console.log('error');
