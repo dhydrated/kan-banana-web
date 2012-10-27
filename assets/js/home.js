@@ -27,7 +27,6 @@ $(document).ready(function(){
   
   KanBanana.Views.ProjectList = Backbone.View.extend({
       initialize: function(){
-//          console.log('ProjectList');
           this.render();
       },
       template: template('projects-list'),
@@ -85,11 +84,7 @@ $(document).ready(function(){
   
 
   KanBanana.Views.ProjectRow = Backbone.View.extend({
-	  //el: '#kb-projects-table',
 	  tagName: "tr",
-      initialize: function(){
-//          this.render();
-      },
       template: template('project-row'),
       events: {
     	"click .btn-remove ": "remove",  
@@ -98,25 +93,11 @@ $(document).ready(function(){
           this.$el.html(this.template(this));
           return this;
       },
-      //id: function() { 
-    	//  return this.model.get('id');    
-      //},
       name: function() { 
     	  return this.model.get('name');    
       },
       description: function() { 
     	  return this.model.get('description');    
-      },
-      remove: function(events){
-    	  self = this;
-    	  domId = events.currentTarget.id;
-    	  selectedId = domId.replace('remove-','');
-    	  console.log(selectedId + ' = ' + this.id);
-    	  if(selectedId == this.id){
-        	  //this.model.destroy({success: function(model, response) {
-        		//  self.$el.find('#'+domId).parentsUntil(self.$el).remove();  
-        	  //}});
-    	  }
       },
   });
 
@@ -124,9 +105,4 @@ $(document).ready(function(){
   // Consider it the constructor of the class.
   var projectList = new KanBanana.Views.ProjectList({el: '#project-table'});
   
-
-  //window.proj = new KanBanana.Views.Project({name:'Hello World!', description:'Testing project.'});
-
-  //proj.save();
-
 });
