@@ -107,6 +107,7 @@
   </div>
   <div class="modal-body">
 	<form>
+	<input id="project-id" type="hidden"></input>
     <div>
 		<label for="project-name">Name</label>
 		<input id="project-name" type="text" placeholder="Name"></input>
@@ -126,7 +127,11 @@
 	
 	<script type="text/x-handlebars-template" id="project-row-template">
 		{% raw %}
-		<td>{{ name }}</td><td>{{ description }}</td><td><button id='remove-{{ id }}' class='btn btn-danger btn-remove'>Delete</button></td>
+		<td>{{ name }}</td><td>{{ description }}</td>
+		<td>
+			<button id='edit-{{ id }}' class='btn btn-edit'>Edit</button>
+			<button id='remove-{{ id }}' class='btn btn-danger btn-remove'>Delete</button>
+		</td>
 		{% endraw %}
 	</script>
 

@@ -27,15 +27,24 @@ $(document).ready(function(){
   
   KanBanana.Views.ProjectList = Backbone.View.extend({
       initialize: function(){
+    	  this.$el.empty();
+    	  this.fetch();
           this.render();
       },
       template: template('projects-list'),
       events: {
     	  "click .create-project" : "launchProjectForm",
     	  "click .save-project" : "saveProject",
-    	  "click #kb-projects-table .btn-remove" : "removeProject"
+    	  "click #kb-projects-table .btn-remove" : "removeProject",
+    	  "click #kb-projects-table .btn-edit" : "launchEditProjectForm"
       },
       render: function() {
+    	  
+    	  
+          this.$el.html(this.template(this));
+          return this;
+      },
+      fetch: function() {
     	  this.projects = new KanBanana.Collections.Projects();
     	  var that = this;
     	  this.projects.fetch({
@@ -49,9 +58,6 @@ $(document).ready(function(){
     			  console.log('error');
     		  }
     	  });
-    	  
-          this.$el.html(this.template(this));
-          return this;
       },
       launchProjectForm: function(){
     	  var form =  $('#project-form-modal');
@@ -61,20 +67,55 @@ $(document).ready(function(){
     	  form.find('#project-name').focus();
     	  form.find('#project-desc').val('');
       },
+      launchEditProjectForm: function(events){
+    	  
+    	  this.launchProjectForm();
+    	  domId = events.currentTarget.id;
+    	  selectedId = domId.replace('edit-','');
+    	  this.projects.each(function(project){
+    		  if(project.get && project.get('id') == selectedId){
+    			  console.log(project);  
+		    	  var form =  $('#project-form-modal');
+		    	  form.modal();
+				  form.find('#project-id').val(project.get('id'));
+				  form.find('#project-name').val(project.get('name'));
+				  form.find('#project-desc').val(project.get('description'));
+    		  }
+    	  });
+    	  
+      },
       saveProject: function(){
     	  that = this;
-    	  var newProject = new KanBanana.Models.Project({name: $('#project-name').val(), description: $('#project-desc').val()});
-    	  newProject.save({},{success: function(model, response) {
-    		  that.projects.add(model);
-    		  var projectRow = new KanBanana.Views.ProjectRow({id: newProject.get('id'), model: newProject});
-    		  that.$('#kb-projects-table').append(projectRow.render().el);
-		  }});
-    	 
+    	  var form =  $('#project-form-modal');
+    	  var projectId = form.find('#project-id').val();
+    	  
+    	  //new
+    	  if(projectId === ''){
+    		  var newProject = new KanBanana.Models.Project({name: $('#project-name').val(), description: $('#project-desc').val()});
+        	  newProject.save({},{success: function(model, response) {
+        		  that.projects.add(model);
+        		  var projectRow = new KanBanana.Views.ProjectRow({id: newProject.get('id'), model: newProject});
+        		  that.$('#kb-projects-table').append(projectRow.render().el);
+    		  }});
+    	  }
+    	  //update
+    	  else{
+    		  this.projects.each(function(project){
+        		  if(project.get && project.get('id') == projectId){
+    		    	  var form =  $('#project-form-modal');
+    		    	  form.modal();
+    				  project.set('name', form.find('#project-name').val());
+    				  project.set('description', form.find('#project-desc').val());
+        			  project.save({success: function(model, response) {
+        				  console.log(model);
+        			  }});
+        		  }
+        	  });
+    	  }
     	  
     	  $('#project-form-modal').modal('hide');
       },
       removeProject: function(events){
-    	  self = this;
     	  domId = events.currentTarget.id;
     	  selectedId = domId.replace('remove-','');
     	  this.projects.each(function(project){
