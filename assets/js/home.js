@@ -54,7 +54,11 @@ $(document).ready(function(){
           return this;
       },
       launchProjectForm: function(){
-    	  $('#project-form-modal').modal();
+    	  var form =  $('#project-form-modal');
+    	  form.modal();
+    	  
+    	  form.find('#project-name').val('');
+    	  form.find('#project-desc').val('');
       },
       saveProject: function(){
     	  that = this;
@@ -86,9 +90,6 @@ $(document).ready(function(){
   KanBanana.Views.ProjectRow = Backbone.View.extend({
 	  tagName: "tr",
       template: template('project-row'),
-      events: {
-    	"click .btn-remove ": "remove",  
-      },
       render: function() {
           this.$el.html(this.template(this));
           return this;
