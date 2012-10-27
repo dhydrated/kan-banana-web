@@ -58,6 +58,7 @@ $(document).ready(function(){
     	  form.modal();
     	  
     	  form.find('#project-name').val('');
+    	  form.find('#project-name').focus();
     	  form.find('#project-desc').val('');
       },
       saveProject: function(){
