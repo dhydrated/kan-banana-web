@@ -27,9 +27,8 @@ $(document).ready(function(){
   
   KanBanana.Views.ProjectList = Backbone.View.extend({
       initialize: function(){
-    	  this.$el.empty();
+//    	  this.$el.empty();
     	  this.fetch();
-          this.render();
       },
       template: template('projects-list'),
       events: {
@@ -39,9 +38,12 @@ $(document).ready(function(){
     	  "click #kb-projects-table .btn-edit" : "launchEditProjectForm"
       },
       render: function() {
-    	  
-    	  
           this.$el.html(this.template(this));
+    	  that = this;
+    	  this.projects.each(function(project){
+			  var projectRow = new KanBanana.Views.ProjectRow({id: project.get('id'), model: project});
+			  that.$('#kb-projects-table').append(projectRow.render().el);
+		  },this);
           return this;
       },
       fetch: function() {
@@ -49,10 +51,7 @@ $(document).ready(function(){
     	  var that = this;
     	  this.projects.fetch({
     		  success: function(){
-    			  that.projects.each(function(project){
-    				  var projectRow = new KanBanana.Views.ProjectRow({id: project.get('id'), model: project});
-    				  that.$('#kb-projects-table').append(projectRow.render().el);
-    			  },this);
+    			  that.render();
     		  },
     		  error: function(){
     			  console.log('error');
@@ -74,7 +73,6 @@ $(document).ready(function(){
     	  selectedId = domId.replace('edit-','');
     	  this.projects.each(function(project){
     		  if(project.get && project.get('id') == selectedId){
-    			  console.log(project);  
 		    	  var form =  $('#project-form-modal');
 		    	  form.modal();
 				  form.find('#project-id').val(project.get('id'));
@@ -107,19 +105,20 @@ $(document).ready(function(){
     				  project.set('name', form.find('#project-name').val());
     				  project.set('description', form.find('#project-desc').val());
         			  project.save({success: function(model, response) {
-        				  console.log(model);
         			  }});
         		  }
         	  });
     	  }
     	  
     	  $('#project-form-modal').modal('hide');
+    	  
+    	  this.render();
       },
       removeProject: function(events){
     	  domId = events.currentTarget.id;
     	  selectedId = domId.replace('remove-','');
     	  this.projects.each(function(project){
-    		  if(project.get && project.get('id') == selectedId){
+    		  if(project && project.get('id') == selectedId){
     			  project.destroy({success: function(model, response) {
     				  $('#'+selectedId).remove();  
     			  }});
