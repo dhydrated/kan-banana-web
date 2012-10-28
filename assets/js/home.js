@@ -16,6 +16,16 @@ $(document).ready(function(){
     return Handlebars.compile($('#'+name+'-template').html());
   };
 
+
+  KanBanana.Models.Status = Backbone.Model.extend({
+	  //urlRoot: '/project/{projectId}/status'
+  });
+  
+  KanBanana.Collections.Statuses = Backbone.Collection.extend({
+      model: KanBanana.Models.Status,
+	  //url: '/project/{projectId}/status'
+  });
+
   KanBanana.Models.Project = Backbone.Model.extend({
 	  urlRoot: '/services/project'
   });
