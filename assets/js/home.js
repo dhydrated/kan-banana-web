@@ -27,7 +27,6 @@ $(document).ready(function(){
   
   KanBanana.Views.ProjectList = Backbone.View.extend({
       initialize: function(){
-//    	  this.$el.empty();
     	  this.fetch();
       },
       template: template('projects-list'),
@@ -143,8 +142,42 @@ $(document).ready(function(){
       },
   });
 
-  // The initialize function is always called when instantiating a Backbone View.
-  // Consider it the constructor of the class.
-  var projectList = new KanBanana.Views.ProjectList({el: '#project-table'});
+  
+
+  KanBanana.Views.ProjectView = Backbone.View.extend({
+	  template: template('project-view'),
+      initialize: function(){
+    	  this.render();
+      },
+      render: function() {
+          this.$el.append(this.template(this));
+          var projectList = new KanBanana.Views.ProjectList({el: "#project-table"});
+          return this;
+      }
+  });
+  
+  KanBanana.Router = Backbone.Router.extend({
+	    initialize: function(options) {
+	      this.el = options.el
+	    },
+	    routes: {
+	      "": "index",
+		  "projects": "projects"
+	    },
+	    index: function() {
+	    	console.log('index');
+	    },
+	    projects: function() {
+	    	console.log('projects');
+	    	new KanBanana.Views.ProjectView({el: this.el});
+	    }
+	  });
+
+	  KanBanana.boot = function(container) {
+	    container = $(container);
+	    var router = new KanBanana.Router({el: container})
+	    Backbone.history.start();
+	  }
+
   
 });
