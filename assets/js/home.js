@@ -142,8 +142,6 @@ $(document).ready(function(){
       },
   });
 
-  
-
   KanBanana.Views.ProjectView = Backbone.View.extend({
 	  template: template('project-view'),
       initialize: function(){
@@ -152,6 +150,17 @@ $(document).ready(function(){
       render: function() {
           this.$el.append(this.template(this));
           var projectList = new KanBanana.Views.ProjectList({el: "#project-table"});
+          return this;
+      }
+  });
+
+  KanBanana.Views.IndexView = Backbone.View.extend({
+	  template: template('index-view'),
+      initialize: function(){
+    	  this.render();
+      },
+      render: function() {
+          this.$el.html(this.template(this));
           return this;
       }
   });
@@ -166,6 +175,7 @@ $(document).ready(function(){
 	    },
 	    index: function() {
 	    	console.log('index');
+	    	new KanBanana.Views.IndexView({el: this.el});
 	    },
 	    projects: function() {
 	    	console.log('projects');
