@@ -68,7 +68,7 @@ $(document).ready(function(){
           this.$el.html(this.template(this));
     	  that = this;
     	  this.statuses.each(function(status){
-			  var statusRow = new KanBanana.Views.StatusRow({id: status.get('id'), model: status});
+			  var statusRow = new KanBanana.Views.GenericModelRow({id: status.get('id'), model: status});
 			  that.$('#kb-statuses-table').append(statusRow.render().el);
 		  },this);
           return this;
@@ -106,8 +106,8 @@ $(document).ready(function(){
     		  if(status && status.get('id') == selectedId){
 		    	  var form =  $('#status-form-modal');
 		    	  form.modal();
-				  form.find('#status-id').val(project.get('id'));
-				  form.find('#status-name').val(project.get('name'));
+				  form.find('#status-id').val(status.get('id'));
+				  form.find('#status-name').val(status.get('name'));
     		  }
     	  });
     	  
@@ -117,12 +117,17 @@ $(document).ready(function(){
     	  var form =  $('#status-form-modal');
     	  var statusId = form.find('#status-id').val();
     	  
+
+    	  KanBanana.Models.Status = Backbone.Model.extend({
+    		  urlRoot: '/services/project/'+this.options.projectId+'/status'
+    	  });
+    	  
     	  //new
     	  if(statusId === ''){
-    		  var newStatus = new KanBanana.Models.Status({name: $('#project-name').val()});
+    		  var newStatus = new KanBanana.Models.Status({name: $('#status-name').val(), projectId: this.options.projectId});
         	  newStatus.save({},{success: function(model, response) {
         		  that.statuses.add(model);
-        		  var statusRow = new KanBanana.Views.StatusRow({id: newStatus.get('id'), model: newStatus});
+        		  var statusRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
         		  that.$('#kb-statuses-table').append(statusRow.render().el);
     		  }});
     	  }
@@ -144,11 +149,15 @@ $(document).ready(function(){
     	  this.render();
       },
       removeStatus: function(events){
+    	  console.log('remove');
     	  domId = events.currentTarget.id;
     	  selectedId = domId.replace('remove-','');
     	  this.statuses.each(function(status){
+    		  console.log(status.get('id')  + ' = ' + selectedId);
     		  if(status && status.get('id') == selectedId){
+    			  console.log(status);
     			  status.destroy({success: function(model, response) {
+    				  console.log(model);
     				  $('#'+selectedId).remove();  
     			  }});
     		  }
