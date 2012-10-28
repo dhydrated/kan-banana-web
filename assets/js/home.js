@@ -148,8 +148,21 @@ $(document).ready(function(){
     	  this.render();
       },
       render: function() {
+    	  this.$el.empty();
           this.$el.append(this.template(this));
           var projectList = new KanBanana.Views.ProjectList({el: "#project-table"});
+          return this;
+      }
+  });
+
+  KanBanana.Views.ProjectSettingsView = Backbone.View.extend({
+	  template: template('project-settings-view'),
+      initialize: function(){
+    	  this.render();
+      },
+      render: function() {
+    	  this.$el.empty();
+          this.$el.append(this.template(this));
           return this;
       }
   });
@@ -160,6 +173,7 @@ $(document).ready(function(){
     	  this.render();
       },
       render: function() {
+    	  this.$el.empty();
           this.$el.html(this.template(this));
           return this;
       }
@@ -171,7 +185,8 @@ $(document).ready(function(){
 	    },
 	    routes: {
 	      "": "index",
-		  "projects": "projects"
+		  "projects": "projects",
+		  "project-settings/:projectId": "projectSettings",
 	    },
 	    index: function() {
 	    	console.log('index');
@@ -180,6 +195,11 @@ $(document).ready(function(){
 	    projects: function() {
 	    	console.log('projects');
 	    	new KanBanana.Views.ProjectView({el: this.el});
+	    },
+	    projectSettings: function(projectId) {
+	    	console.log('projectSettings');
+	    	console.log('projectId: ' + projectId);
+	    	new KanBanana.Views.ProjectSettingsView({el: this.el});
 	    }
 	  });
 
