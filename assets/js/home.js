@@ -119,7 +119,7 @@ $(document).ready(function(){
     	  
 
     	  KanBanana.Models.Status = Backbone.Model.extend({
-    		  urlRoot: '/services/project/'+this.options.projectId+'/status'
+    		  url: '/services/project/'+this.options.projectId+'/status'
     	  });
     	  
     	  //new

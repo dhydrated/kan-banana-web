@@ -16,24 +16,19 @@ $(document).ready(function(){
     return Handlebars.compile($('#'+name+'-template').html());
   };
 
-  KanBanana.Models.Project = Backbone.Model.extend({
-	  urlRoot: '/services/project'
-  });
-  
-  KanBanana.Collections.Projects = Backbone.Collection.extend({
-      model: KanBanana.Models.Project
-  });
-  
-  KanBanana.Views.ProjectList = Backbone.View.extend({
+  KanBanana.Views.GoButton = Backbone.View.extend({
       initialize: function(){
-          alert("Alerts suck.");
+    	  this.render();
       },
-      render:
+      template: template('go-button'),
+      render: function(){
+    	  this.$el.html(this.template(this));
+      }
   });
 
   // The initialize function is always called when instantiating a Backbone View.
   // Consider it the constructor of the class.
-  var projectList = new KanBanana.Views.ProjectList();
+  new KanBanana.Views.GoButton({el:"#launch-button"});
   
 
   //window.proj = new KanBanana.Views.Project({name:'Hello World!', description:'Testing project.'});
