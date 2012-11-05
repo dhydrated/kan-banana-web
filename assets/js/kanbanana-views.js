@@ -34,6 +34,7 @@
   
   KanBanana.Views.StatusList = Backbone.View.extend({
       initialize: function(){
+    	  this.projectId = this.options.projectId;
     	  this.fetch();
       },
       template: template('statuses-list'),
@@ -54,11 +55,7 @@
       },
       fetch: function() {
     	  
-    	  KanBanana.Collections.Statuses = Backbone.Collection.extend({
-    		  url: '/services/project/'+this.options.projectId+'/status'
-    	  });
-    	  
-    	  this.statuses = new KanBanana.Collections.Statuses(context);
+    	  this.statuses = new KanBanana.Collections.Statuses({projectId: this.projectId});
     	  var that = this;
     	  this.statuses.fetch({
     		  success: function(){
@@ -96,14 +93,9 @@
     	  var form =  $('#status-form-modal');
     	  var statusId = form.find('#status-id').val();
     	  
-
-    	  KanBanana.Models.Status = Backbone.Model.extend({
-    		  url: '/services/project/'+this.options.projectId+'/status'
-    	  });
-    	  
     	  //new
     	  if(statusId === ''){
-    		  var newStatus = new KanBanana.Models.Status({name: $('#status-name').val(), projectId: this.options.projectId});
+    		  var newStatus = new KanBanana.Models.Status({name: $('#status-name').val(), projectId: this.projectId});
         	  newStatus.save({},{success: function(model, response) {
         		  that.statuses.add(model);
         		  var statusRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
@@ -146,6 +138,7 @@
   
   KanBanana.Views.SizeList = Backbone.View.extend({
       initialize: function(){
+    	  this.projectId = this.options.projectId;
     	  this.fetch();
       },
       template: template('sizes-list'),
@@ -166,11 +159,7 @@
       },
       fetch: function() {
     	  
-    	  KanBanana.Collections.Sizes = Backbone.Collection.extend({
-    		  url: '/services/project/'+this.options.projectId+'/story_size'
-    	  });
-    	  
-    	  this.sizes = new KanBanana.Collections.Sizes(context);
+    	  this.sizes = new KanBanana.Collections.Sizes({projectId: this.projectId});
     	  var that = this;
     	  this.sizes.fetch({
     		  success: function(){
@@ -211,17 +200,12 @@
     	  var form =  $('#size-form-modal');
     	  var modelId = form.find('#size-id').val();
     	  
-
-    	  KanBanana.Models.Size = Backbone.Model.extend({
-    		  url: '/services/project/'+this.options.projectId+'/story_size'
-    	  });
-    	  
     	  //new
     	  if(modelId === ''){
     		  var newModel = new KanBanana.Models.Size({
     			  name: $('#size-name').val()
     			  , value: $('#size-value').val()
-    			  , projectId: this.options.projectId
+    			  , projectId: this.projectId
     		  });
         	  newModel.save({},{success: function(model, response) {
         		  that.sizes.add(model);
@@ -379,13 +363,14 @@
   KanBanana.Views.ProjectSettingsView = Backbone.View.extend({
 	  template: template('project-settings-view'),
       initialize: function(){
+    	  this.projectId = this.options.projectId;
     	  this.render();
       },
       render: function() {
     	  this.$el.empty();
           this.$el.append(this.template(this));
-          new KanBanana.Views.StatusList({el: "#status-table", projectId: this.options.projectId});
-          new KanBanana.Views.SizeList({el: "#size-table", projectId: this.options.projectId});
+          new KanBanana.Views.StatusList({el: "#status-table", projectId: this.projectId});
+          new KanBanana.Views.SizeList({el: "#size-table", projectId: this.projectId});
           return this;
       }
   });
