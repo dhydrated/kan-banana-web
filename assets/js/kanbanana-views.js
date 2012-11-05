@@ -404,7 +404,7 @@
     	  
     	  form.find('#member-email').val('');
     	  form.find('#member-email').focus();
-    	  form.find('#member-role').val('');
+    	  form.find('#member-role option:selected').val('');
       },
       launchEditForm: function(events){
     	  
@@ -431,7 +431,7 @@
     	  if(modelId === ''){
     		  var newModel = new KanBanana.Models.Member({
     			  email: $('#member-email').val()
-    			  , role: $('#member-role').val()
+    			  , role: $('#member-role option:selected').val()
     			  , projectId: this.projectId
     		  });
         	  newModel.save({},{success: function(model, response) {
@@ -445,10 +445,10 @@
     	  else{
     		  this.members.each(function(aModel){
         		  if(aModel && aModel.get('id') == modelId){
-    		    	  var form =  $('#type-form-modal');
+    		    	  var form =  $('#member-form-modal');
     		    	  form.modal();
     		    	  aModel.set('email', form.find('#member-email').val());
-    		    	  aModel.set('role', form.find('#member-role').val());
+    		    	  aModel.set('role', form.find('#member-role option:selected').val());
     		    	  aModel.save({success: function(model, response) {
         			  }});
         		  }
