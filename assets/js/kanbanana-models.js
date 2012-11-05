@@ -21,3 +21,13 @@ KanBanana.Models.Status = Backbone.Model.extend({
 	  return '/services/project/'+this.projectId+'/status';
 	},
 });
+
+KanBanana.Models.Type = Backbone.Model.extend({
+	initialize: function(options){
+	  this.projectId = options.projectId;
+	  this.fetch();
+	},
+	url: function() {
+	  return '/services/project/'+this.projectId+'/story_type';
+	},
+});

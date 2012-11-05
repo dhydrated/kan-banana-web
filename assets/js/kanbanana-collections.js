@@ -24,3 +24,13 @@
 		  return '/services/project/'+this.projectId+'/story_size';
 		},
   });
+  
+  
+  KanBanana.Collections.Types = Backbone.Collection.extend({
+		initialize: function(options){
+		  this.projectId = options.projectId;
+		},
+		url: function() {
+		  return '/services/project/'+this.projectId+'/story_type';
+		},
+  });
