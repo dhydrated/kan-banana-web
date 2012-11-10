@@ -1,4 +1,8 @@
   
+  KanBanana.Collections.Users = Backbone.Collection.extend({
+      model: KanBanana.Models.User,
+	  url: '/services/user'
+  });
   
   KanBanana.Collections.Projects = Backbone.Collection.extend({
       model: KanBanana.Models.Project,

@@ -609,10 +609,17 @@
 	  template: template('index-view'),
       initialize: function(){
     	  this.render();
+    	  this.checkUser();
       },
       render: function() {
     	  this.$el.empty();
           this.$el.html(this.template(this));
           return this;
+      },
+      checkUser: function() {
+    	  this.userEmail = $('#kb_login_user').val();
+    	  
+    	  var user = new KanBanana.Models.User();
+    	  user.fetchByName();
       }
   });
