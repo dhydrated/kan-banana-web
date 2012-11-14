@@ -38,32 +38,23 @@
       }
   });
   
-  KanBanana.Views.StatusList = Backbone.View.extend({
-      initialize: function(){
-    	  this.projectId = this.options.projectId;
-    	  this.fetch();
-      },
-      template: template('statuses-list'),
-      events: {
-    	  "click .create-status" : "launchStatusForm",
-    	  "click .save-status" : "saveStatus",
-    	  "click #kb-statuses-table .btn-remove" : "removeStatus",
-    	  "click #kb-statuses-table .btn-edit" : "launchEditStatusForm"
-      },
+
+  
+  KanBanana.Views.GenericList = Backbone.View.extend({
       render: function() {
           this.$el.html(this.template(this));
     	  that = this;
-    	  this.statuses.each(function(status){
-			  var statusRow = new KanBanana.Views.GenericModelRow({id: status.get('id'), model: status});
-			  that.$('#kb-statuses-table').append(statusRow.render().el);
+    	  this.mycollection.each(function(model){
+			  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
+			  that.$(that.elTable).append(aRow.render().el);
 		  },this);
           return this;
       },
       fetch: function() {
     	  
-    	  this.statuses = new KanBanana.Collections.Statuses({projectId: this.projectId});
+    	  this.mycollection = new KanBanana.Collections.Statuses({projectId: this.projectId});
     	  var that = this;
-    	  this.statuses.fetch({
+    	  this.mycollection.fetch({
     		  success: function(){
     			  that.render();
     		  },
@@ -72,29 +63,74 @@
     		  }
     	  });
       },
-      launchStatusForm: function(){
-    	  var form =  $('#status-form-modal');
+      launchForm: function(){
+    	  var that = this;
+    	  var form =  $(this.elFormModal);
     	  form.modal();
-    	  
-    	  form.find('#status-name').val('');
-    	  form.find('#status-name').focus();
+    	  $.each(this.attributes, function(index, value){
+    		  form.find('#'+that.modelType+'-' + value).val('');
+    		  form.find('#'+that.modelType+'-' + value).focus();
+    	  });
       },
-      launchEditStatusForm: function(events){
-    	  
-    	  this.launchStatusForm();
+      launchEditForm: function(events){
+    	  var that = this;
+    	  this.launchForm();
     	  domId = events.currentTarget.id;
     	  selectedId = domId.replace('edit-','');
-    	  this.statuses.each(function(status){
-    		  if(status && status.get('id') == selectedId){
-		    	  var form =  $('#status-form-modal');
+    	  this.mycollection.each(function(model){
+    		  if(model && model.get('id') == selectedId){
+		    	  var form =  $(that
+		    			  .elFormModal);
+		    	  var self = that;
 		    	  form.modal();
-				  form.find('#status-id').val(status.get('id'));
-				  form.find('#status-name').val(status.get('name'));
+		    	  $.each(that.attributes, function(index, value){
+	    			  console.log(model);
+	    			  console.log(value);
+	    			  console.log(model.get(value));
+	    			  console.log('#'+that.modelType+'-' + value);
+		    		  form.find('#'+that.modelType+'-' + value).val(model.get(value));
+		    	  });
+				  
     		  }
     	  });
     	  
       },
-      saveStatus: function(){
+      remove: function(events){
+    	  console.log('remove');
+    	  domId = events.currentTarget.id;
+    	  selectedId = domId.replace('remove-','');
+    	  console.log(this.mycollection);
+    	  this.mycollection.each(function(aModel){
+    		  console.log(aModel.get('id')  + ' = ' + selectedId);
+    		  if(aModel && aModel.get('id') == selectedId){
+    			  console.log(aModel);
+    			  aModel.destroy({success: function(model, response) {
+    				  console.log(model);
+    				  $('#'+selectedId).remove();  
+    			  }});
+    		  }
+    	  });
+      },
+  });
+  
+  KanBanana.Views.StatusList = KanBanana.Views.GenericList.extend({
+      initialize: function(){
+    	  this.projectId = this.options.projectId;
+    	  this.fetch();
+    	  this.elTable = '#kb-statuses-table';
+    	  this.elFormModal = '#status-form-modal';
+    	  this.modelType = 'status';
+    	  this.attributes = new Array("id","name");
+    	  this.labels = new Array("ID","Name");
+      },
+      template: template('statuses-list'),
+      events: {
+    	  "click .create-status" : "launchForm",
+    	  "click .save-status" : "save",
+    	  "click #kb-statuses-table .btn-remove" : "remove",
+    	  "click #kb-statuses-table .btn-edit" : "launchEditForm"
+      },
+      save: function(){
     	  that = this;
     	  var form =  $('#status-form-modal');
     	  var statusId = form.find('#status-id').val();
@@ -103,19 +139,19 @@
     	  if(statusId === ''){
     		  var newStatus = new KanBanana.Models.Status({name: $('#status-name').val(), projectId: this.projectId});
         	  newStatus.save({},{success: function(model, response) {
-        		  that.statuses.add(model);
-        		  var statusRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
-        		  that.$('#kb-statuses-table').append(statusRow.render().el);
+        		  that.mycollection.add(response);
+        		  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
+        		  that.$('#kb-statuses-table').append(aRow.render().el);
     		  }});
     	  }
     	  //update
     	  else{
-    		  this.statuses.each(function(status){
-        		  if(status && status.get('id') == statusId){
+    		  this.mycollection.each(function(aModel){
+        		  if(aModel && aModel.get('id') == statusId){
     		    	  var form =  $('#status-form-modal');
     		    	  form.modal();
-    		    	  status.set('name', form.find('#status-name').val());
-    		    	  status.save({success: function(model, response) {
+    		    	  aModel.set('name', form.find('#status-name').val());
+    		    	  aModel.save({success: function(model, response) {
         			  }});
         		  }
         	  });
@@ -124,22 +160,7 @@
     	  $('#status-form-modal').modal('hide');
     	  
     	  this.render();
-      },
-      removeStatus: function(events){
-    	  console.log('remove');
-    	  domId = events.currentTarget.id;
-    	  selectedId = domId.replace('remove-','');
-    	  this.statuses.each(function(status){
-    		  console.log(status.get('id')  + ' = ' + selectedId);
-    		  if(status && status.get('id') == selectedId){
-    			  console.log(status);
-    			  status.destroy({success: function(model, response) {
-    				  console.log(model);
-    				  $('#'+selectedId).remove();  
-    			  }});
-    		  }
-    	  });
-      },
+      }
   });
   
   KanBanana.Views.SizeList = Backbone.View.extend({
@@ -214,7 +235,7 @@
     			  , projectId: this.projectId
     		  });
         	  newModel.save({},{success: function(model, response) {
-        		  that.sizes.add(model);
+        		  that.sizes.add(response);
         		  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
         		  that.$('#kb-sizes-table').append(aRow.render().el);
     		  }});
@@ -267,7 +288,7 @@
       render: function() {
           this.$el.html(this.template(this));
     	  that = this;
-    	  this.sizes.each(function(size){
+    	  this.types.each(function(size){
 			  var aRow = new KanBanana.Views.GenericModelRow({id: size.get('id'), model: size});
 			  that.$('#kb-types-table').append(aRow.render().el);
 		  },this);
@@ -275,9 +296,9 @@
       },
       fetch: function() {
     	  
-    	  this.sizes = new KanBanana.Collections.Types({projectId: this.projectId});
+    	  this.types = new KanBanana.Collections.Types({projectId: this.projectId});
     	  var that = this;
-    	  this.sizes.fetch({
+    	  this.types.fetch({
     		  success: function(){
     			  that.render();
     		  },
@@ -324,7 +345,7 @@
     			  , projectId: this.projectId
     		  });
         	  newModel.save({},{success: function(model, response) {
-        		  that.sizes.add(model);
+        		  that.types.add(response);
         		  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
         		  that.$('#kb-types-table').append(aRow.render().el);
     		  }});
@@ -435,7 +456,7 @@
     			  , projectId: this.projectId
     		  });
         	  newModel.save({},{success: function(model, response) {
-        		  that.members.add(model);
+        		  that.members.add(response);
         		  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
         		  aRow.setNameColumn('email')
         		  that.$('#kb-members-table').append(aRow.render().el);
