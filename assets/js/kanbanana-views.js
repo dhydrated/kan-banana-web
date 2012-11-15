@@ -50,9 +50,21 @@
 		  },this);
           return this;
       },
+      getCollection: function(){
+    	  
+    	  console.log('need to implement this method');
+    	  
+    	  return null;
+      },
+      getModel: function(){
+    	
+    	  console.log('need to implement this method');
+    	  
+		  return null;
+      },
       fetch: function() {
     	  
-    	  this.mycollection = new KanBanana.Collections.Statuses({projectId: this.projectId});
+    	  this.mycollection = this.getCollection();
     	  var that = this;
     	  this.mycollection.fetch({
     		  success: function(){
@@ -111,6 +123,44 @@
     		  }
     	  });
       },
+      getModelInForm: function(){
+    	  console.log('need to implement this method');
+    	  return null;
+      },
+      save: function(){
+    	  that = this;
+    	  var form =  $(this.elFormModal);
+    	  var modelId = form.find('#'+this.modelType+'-id').val();
+    	  
+    	  //new
+    	  if(modelId === ''){
+    		  var newStatus = new KanBanana.Models.Status(this.getModelInForm());
+        	  newStatus.save({},{success: function(model, response) {
+        		  that.mycollection.add(response);
+        		  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
+        		  that.$(that.elTable).append(aRow.render().el);
+    		  }});
+    	  }
+    	  //update
+    	  else{
+    		  this.mycollection.each(function(aModel){
+        		  if(aModel && aModel.get('id') == modelId){
+    		    	  var form =  $(that.elFormModal);
+    		    	  form.modal();
+    		    	  
+    		    	  $.each(that.attributes, function(index, value){
+        		    	  aModel.set(value, form.find('#'+that.modelType+'-' + value).val());
+    		    	  });
+    		    	  
+    		    	  aModel.save({success: function(model, response) { }});
+        		  }
+        	  });
+    	  }
+    	  
+    	  $(this.elFormModal).modal('hide');
+    	  
+    	  this.render();
+      }
   });
   
   KanBanana.Views.StatusList = KanBanana.Views.GenericList.extend({
@@ -130,36 +180,20 @@
     	  "click #kb-statuses-table .btn-remove" : "remove",
     	  "click #kb-statuses-table .btn-edit" : "launchEditForm"
       },
-      save: function(){
-    	  that = this;
-    	  var form =  $('#status-form-modal');
-    	  var statusId = form.find('#status-id').val();
+      getModelInForm: function(){
+    	  var model = {
+    			  name: $('#'+this.modelType+'-name').val()
+    			  , projectId: this.projectId
+    	      }
+    	  return model;
+      },
+      getModel: function(){
+    	
+		  return new KanBanana.Models.Status(this.getModelInForm());
+      },
+      getCollection: function(){
     	  
-    	  //new
-    	  if(statusId === ''){
-    		  var newStatus = new KanBanana.Models.Status({name: $('#status-name').val(), projectId: this.projectId});
-        	  newStatus.save({},{success: function(model, response) {
-        		  that.mycollection.add(response);
-        		  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
-        		  that.$('#kb-statuses-table').append(aRow.render().el);
-    		  }});
-    	  }
-    	  //update
-    	  else{
-    		  this.mycollection.each(function(aModel){
-        		  if(aModel && aModel.get('id') == statusId){
-    		    	  var form =  $('#status-form-modal');
-    		    	  form.modal();
-    		    	  aModel.set('name', form.find('#status-name').val());
-    		    	  aModel.save({success: function(model, response) {
-        			  }});
-        		  }
-        	  });
-    	  }
-    	  
-    	  $('#status-form-modal').modal('hide');
-    	  
-    	  this.render();
+    	  return new KanBanana.Collections.Statuses({projectId: this.projectId});
       }
   });
   
