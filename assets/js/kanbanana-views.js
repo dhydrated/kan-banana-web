@@ -134,7 +134,7 @@
     	  
     	  //new
     	  if(modelId === ''){
-    		  var newStatus = new KanBanana.Models.Status(this.getModelInForm());
+    		  var newStatus = this.getModel();
         	  newStatus.save({},{success: function(model, response) {
         		  that.mycollection.add(response);
         		  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
@@ -197,114 +197,41 @@
       }
   });
   
-  KanBanana.Views.SizeList = Backbone.View.extend({
+
+  
+  KanBanana.Views.SizeList = KanBanana.Views.GenericList.extend({
       initialize: function(){
     	  this.projectId = this.options.projectId;
     	  this.fetch();
+    	  this.elTable = '#kb-sizes-table';
+    	  this.elFormModal = '#size-form-modal';
+    	  this.modelType = 'size';
+    	  this.attributes = new Array("id","value","name");
+    	  this.labels = new Array("ID","Value","Name");
       },
       template: template('sizes-list'),
       events: {
-    	  "click .create-size" : "launchCreateForm",
+    	  "click .create-size" : "launchForm",
     	  "click .save-size" : "save",
     	  "click #kb-sizes-table .btn-remove" : "remove",
     	  "click #kb-sizes-table .btn-edit" : "launchEditForm"
       },
-      render: function() {
-          this.$el.html(this.template(this));
-    	  that = this;
-    	  this.sizes.each(function(size){
-			  var aRow = new KanBanana.Views.GenericModelRow({id: size.get('id'), model: size});
-			  that.$('#kb-sizes-table').append(aRow.render().el);
-		  },this);
-          return this;
-      },
-      fetch: function() {
-    	  
-    	  this.sizes = new KanBanana.Collections.Sizes({projectId: this.projectId});
-    	  var that = this;
-    	  this.sizes.fetch({
-    		  success: function(){
-    			  that.render();
-    		  },
-    		  error: function(){
-    			  console.log('error');
-    		  }
-    	  });
-      },
-      launchCreateForm: function(){
-    	  console.log('create');
-    	  var form =  $('#size-form-modal');
-    	  form.modal();
-    	  
-    	  form.find('#size-name').val('');
-    	  form.find('#size-name').focus();
-    	  form.find('#size-value').val('');
-      },
-      launchEditForm: function(events){
-    	  
-    	  this.launchCreateForm();
-    	  domId = events.currentTarget.id;
-    	  selectedId = domId.replace('edit-','');
-    	  this.sizes.each(function(aModel){
-    		  if(aModel && aModel.get('id') == selectedId){
-		    	  var form =  $('#size-form-modal');
-		    	  form.modal();
-				  form.find('#size-id').val(aModel.get('id'));
-				  form.find('#size-name').val(aModel.get('name'));
-				  form.find('#size-value').val(aModel.get('value'));
-    		  }
-    	  });
-    	  
-      },
-      save: function(){
-    	  that = this;
-    	  var form =  $('#size-form-modal');
-    	  var modelId = form.find('#size-id').val();
-    	  
-    	  //new
-    	  if(modelId === ''){
-    		  var newModel = new KanBanana.Models.Size({
-    			  name: $('#size-name').val()
-    			  , value: $('#size-value').val()
+      getModelInForm: function(){
+    	  var model = {
+    			  name: $('#'+this.modelType+'-name').val()
+    			  , value: $('#'+this.modelType+'-value').val()
     			  , projectId: this.projectId
-    		  });
-        	  newModel.save({},{success: function(model, response) {
-        		  that.sizes.add(response);
-        		  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
-        		  that.$('#kb-sizes-table').append(aRow.render().el);
-    		  }});
-    	  }
-    	  //update
-    	  else{
-    		  this.sizes.each(function(aModel){
-        		  if(aModel && aModel.get('id') == modelId){
-    		    	  var form =  $('#size-form-modal');
-    		    	  form.modal();
-    		    	  aModel.set('name', form.find('#size-name').val());
-    		    	  aModel.set('value', form.find('#size-value').val());
-    		    	  aModel.save({success: function(model, response) {
-        			  }});
-        		  }
-        	  });
-    	  }
-    	  
-    	  $('#size-form-modal').modal('hide');
-    	  
-    	  this.render();
+    	      }
+    	  return model;
       },
-      remove: function(events){
-    	  console.log('remove');
-    	  domId = events.currentTarget.id;
-    	  selectedId = domId.replace('remove-','');
-    	  this.sizes.each(function(aModel){
-    		  if(aModel && aModel.get('id') == selectedId){
-    			  aModel.destroy({success: function(model, response) {
-    				  console.log(model);
-    				  $('#'+selectedId).remove();  
-    			  }});
-    		  }
-    	  });
+      getModel: function(){
+    	
+		  return new KanBanana.Models.Size(this.getModelInForm());
       },
+      getCollection: function(){
+    	  
+    	  return new KanBanana.Collections.Sizes({projectId: this.projectId});
+      }
   });
   
   KanBanana.Views.TypeList = Backbone.View.extend({
