@@ -121,8 +121,33 @@
     	  });
       },
       getModelInForm: function(){
-    	  console.log('need to implement this method');
-    	  return null;
+    	  var model = {projectId: this.projectId}
+    	  var that = this;
+    	  $.each(that.attributes, function(index, value){
+    		  
+    		  var val = $('#'+that.modelType+'-'+index+' ' + value).val();
+    		  
+    		  if(idIsNotNull(index, val)){
+    			  
+    			  model[index] = val;
+    		  }
+    	  });
+    	  
+    	  function idIsNotNull(field, value) {
+    		  
+    		  if(field === 'id' 
+    			  && (value === null 
+    			  || value === "")){
+    			  
+    			  return false;
+    		  }
+    		  return true;
+    	  }
+    	  
+    	  console.log('hahahaha');
+    	  console.log(model);
+    	  
+    	  return model;
       },
       save: function(){
     	  that = this;
@@ -179,13 +204,6 @@
     	  "click #kb-statuses-table .btn-remove" : "remove",
     	  "click #kb-statuses-table .btn-edit" : "launchEditForm"
       },
-      getModelInForm: function(){
-    	  var model = {
-    			  name: $('#'+this.modelType+'-name').val()
-    			  , projectId: this.projectId
-    	      }
-    	  return model;
-      },
       getModel: function(){
     	
 		  return new KanBanana.Models.Status(this.getModelInForm());
@@ -216,14 +234,6 @@
     	  "click #kb-sizes-table .btn-remove" : "remove",
     	  "click #kb-sizes-table .btn-edit" : "launchEditForm"
       },
-      getModelInForm: function(){
-    	  var model = {
-    			  name: $('#'+this.modelType+'-name').val()
-    			  , value: $('#'+this.modelType+'-value').val()
-    			  , projectId: this.projectId
-    	      }
-    	  return model;
-      },
       getModel: function(){
     	
 		  return new KanBanana.Models.Size(this.getModelInForm());
@@ -251,14 +261,6 @@
     	  "click .save-type" : "save",
     	  "click #kb-types-table .btn-remove" : "remove",
     	  "click #kb-types-table .btn-edit" : "launchEditForm"
-      },
-      getModelInForm: function(){
-    	  var model = {
-    			  name: $('#'+this.modelType+'-name').val()
-    			  , color: $('#'+this.modelType+'-color').val()
-    			  , projectId: this.projectId
-    	      }
-    	  return model;
       },
       getModel: function(){
     	
@@ -288,14 +290,6 @@
     	  "click .save-member" : "save",
     	  "click #kb-members-table .btn-remove" : "remove",
     	  "click #kb-members-table .btn-edit" : "launchEditForm"
-      },
-      getModelInForm: function(){
-    	  var model = {
-    			  email: $('#'+this.modelType+'-email').val()
-    			  , role: $('#'+this.modelType+'-role option:selected').val()
-    			  , projectId: this.projectId
-    	      }
-    	  return model;
       },
       getModel: function(){
     	
