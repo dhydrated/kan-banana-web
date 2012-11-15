@@ -233,116 +233,42 @@
     	  return new KanBanana.Collections.Sizes({projectId: this.projectId});
       }
   });
-  
-  KanBanana.Views.TypeList = Backbone.View.extend({
+
+  KanBanana.Views.TypeList = KanBanana.Views.GenericList.extend({
       initialize: function(){
     	  this.projectId = this.options.projectId;
     	  this.fetch();
+    	  this.elTable = '#kb-types-table';
+    	  this.elFormModal = '#type-form-modal';
+    	  this.modelType = 'type';
+    	  this.attributes = new Array("id","color","name");
+    	  this.labels = new Array("ID","Color","Name");
       },
       template: template('types-list'),
       events: {
-    	  "click .create-type" : "launchCreateForm",
+    	  "click .create-type" : "launchForm",
     	  "click .save-type" : "save",
     	  "click #kb-types-table .btn-remove" : "remove",
     	  "click #kb-types-table .btn-edit" : "launchEditForm"
       },
-      render: function() {
-          this.$el.html(this.template(this));
-    	  that = this;
-    	  this.types.each(function(size){
-			  var aRow = new KanBanana.Views.GenericModelRow({id: size.get('id'), model: size});
-			  that.$('#kb-types-table').append(aRow.render().el);
-		  },this);
-          return this;
-      },
-      fetch: function() {
-    	  
-    	  this.types = new KanBanana.Collections.Types({projectId: this.projectId});
-    	  var that = this;
-    	  this.types.fetch({
-    		  success: function(){
-    			  that.render();
-    		  },
-    		  error: function(){
-    			  console.log('error');
-    		  }
-    	  });
-      },
-      launchCreateForm: function(){
-    	  console.log('create');
-    	  var form =  $('#type-form-modal');
-    	  form.modal();
-    	  
-    	  form.find('#type-name').val('');
-    	  form.find('#type-name').focus();
-    	  form.find('#type-color').val('');
-      },
-      launchEditForm: function(events){
-    	  
-    	  this.launchCreateForm();
-    	  domId = events.currentTarget.id;
-    	  selectedId = domId.replace('edit-','');
-    	  this.types.each(function(aModel){
-    		  if(aModel && aModel.get('id') == selectedId){
-		    	  var form =  $('#type-form-modal');
-		    	  form.modal();
-				  form.find('#type-id').val(aModel.get('id'));
-				  form.find('#type-name').val(aModel.get('name'));
-				  form.find('#type-color').val(aModel.get('color'));
-    		  }
-    	  });
-    	  
-      },
-      save: function(){
-    	  that = this;
-    	  var form =  $('#type-form-modal');
-    	  var modelId = form.find('#type-id').val();
-    	  
-    	  //new
-    	  if(modelId === ''){
-    		  var newModel = new KanBanana.Models.Type({
-    			  name: $('#type-name').val()
-    			  , color: $('#type-color').val()
+      getModelInForm: function(){
+    	  var model = {
+    			  name: $('#'+this.modelType+'-name').val()
+    			  , color: $('#'+this.modelType+'-color').val()
     			  , projectId: this.projectId
-    		  });
-        	  newModel.save({},{success: function(model, response) {
-        		  that.types.add(response);
-        		  var aRow = new KanBanana.Views.GenericModelRow({id: model.get('id'), model: model});
-        		  that.$('#kb-types-table').append(aRow.render().el);
-    		  }});
-    	  }
-    	  //update
-    	  else{
-    		  this.types.each(function(aModel){
-        		  if(aModel && aModel.get('id') == modelId){
-    		    	  var form =  $('#type-form-modal');
-    		    	  form.modal();
-    		    	  aModel.set('name', form.find('#type-name').val());
-    		    	  aModel.set('color', form.find('#type-color').val());
-    		    	  aModel.save({success: function(model, response) {
-        			  }});
-        		  }
-        	  });
-    	  }
-    	  
-    	  $('#type-form-modal').modal('hide');
-    	  
-    	  this.render();
+    	      }
+    	  return model;
       },
-      remove: function(events){
-    	  console.log('remove');
-    	  domId = events.currentTarget.id;
-    	  selectedId = domId.replace('remove-','');
-    	  this.types.each(function(aModel){
-    		  if(aModel && aModel.get('id') == selectedId){
-    			  aModel.destroy({success: function(model, response) {
-    				  console.log(model);
-    				  $('#'+selectedId).remove();  
-    			  }});
-    		  }
-    	  });
+      getModel: function(){
+    	
+		  return new KanBanana.Models.Type(this.getModelInForm());
       },
+      getCollection: function(){
+    	  
+    	  return new KanBanana.Collections.Types({projectId: this.projectId});
+      }
   });
+  
   
   KanBanana.Views.MemberList = Backbone.View.extend({
       initialize: function(){
